@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Torrents List</title>
+        <style></style>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <a href="/uploadTorrent">Add Torrent</a> &nbsp;&nbsp;&nbsp;
+        <a href="/movierulz">Movierulz</a>
+        <h1>Torrent List</h1>
+        <ol>
+            <% torrents.forEach((torrent) => { %>
+            <li>
+                <a href="/torrent/<%= torrent %>">
+                    <%= torrent %>
+                    <span id="<%= torrent %>">0%</span></a
+                >
+                <br />
+                <!-- <button onclick="pause('<%= torrent %>')">Pause</button>
+                <button onclick="resume('<%= torrent %>')">Resume</button> -->
+                <button>
+                    <a href="/deleteTorrent/<%= torrent %>"> Delete Torrent </a>
+                </button>
+                <button>
+                    <a href="/deleteTorrent/<%= torrent %>?files=true">
+                        Delete Torrent With Files
+                    </a>
+                </button>
+            </li>
+            <% }) %>
+        </ol>
+    </body>
+    <script>
+        const socket = io();
+
+        const pause = (torrent) => {
+            socket.emit("pauseTorrent", torrent);
+        };
+
+        const resume = (torrent) => {
+            socket.emit("resumeTorrent", torrent);
+        };
+
+        const deleteTorrent = (torrent) => {};
+
+        const deleteTorrentWithFiles = (torrent) => {};
+
+        socket.on("torrentsProgress", (data) => {
+            console.log();
+            data.forEach((e) => {
+                const node = document.getElementById(e.id);
+                node.innerHTML = e.progress + "%";
+            });
+        });
+    </script>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <p style="color: red"><%= error %></p>
+        <h1>Torrent Files (<span id="main"></span>)</h1>
+        <ol>
+            <% files.forEach((file, index) => { %>
+            <li>
+                <a
+                    href="intent://<%= encodeURI(`192.168.1.13:5000/${index}`) %>#Intent;package=org.videolan.vlc;action=android.intent.action.VIEW;scheme=http;type=video/mp4;end"
+                >
+                    <%= file.name %> <span id="<%= file.name %>">0%</span>
+                </a>
+            </li>
+            <% }) %>
+        </ol>
+    </body>
+    <script>
+        const socket = io();
+
+        socket.on("torrentFilesProgress", ({ torrent, files }) => {
+            const main = document.getElementById("main");
+            main.innerHTML = torrent.progress + "%";
+            files.forEach((e) => {
+                const node = document.getElementById(e.id);
+                node.innerHTML = e.progress + "%";
+            });
+        });
+    </script>
+</html>
