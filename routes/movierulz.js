@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { default: axios } = require("axios");
 const { JSDOM } = require("jsdom");
+const { movierulzURL } = require("../config");
 
 router
     .get("/:id*", (req, res) => {
-        axios.get(`https://7movierulz.es/${req.url}`).then((response) => {
+        axios.get(`${movierulzURL}/${req.url}`).then((response) => {
             const html = response.data.replace(
                 /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
                 ""
@@ -16,18 +17,18 @@ router
             for (let i = 0; i < anchors.length; i++) {
                 const anchor = anchors[i];
                 const href = anchor.href;
-                if (href.startsWith("https://7movierulz.es")) {
+                if (href.startsWith(`${movierulzURL}`)) {
                     anchor.setAttribute(
                         "href",
                         href.replace(
-                            "https://7movierulz.es",
-                            "http://192.168.1.13:3000/movierulz"
+                            `${movierulzURL}`,
+                            "/movierulz"
                         )
                     );
                 } else if (href.startsWith("magnet")) {
                     anchor.setAttribute(
                         "href",
-                        `http://192.168.1.13:3000/uploadTorrent/magnet?magnet=${href}`
+                        `/uploadTorrent/magnet?magnet=${href}`
                     );
                 }
             }
@@ -36,11 +37,11 @@ router
             for (let i = 0; i < images.length; i++) {
                 const image = images[i];
                 const src = image.src;
-                if (src.startsWith("https://7movierulz.es")) {
+                if (src.startsWith(`${movierulzURL}`)) {
                     image.setAttribute(
                         "src",
-                        "http://192.168.1.13:3000/proxy/movierulz/" +
-                            src.replace("https://7movierulz.es/", "")
+                        "/proxy/movierulz/" +
+                            src.replace(`${movierulzURL}/`, "")
                     );
                 }
             }
@@ -50,7 +51,7 @@ router
     })
     .get("/", (req, res) => {
         const { id } = req.params;
-        axios.get(`https://7movierulz.es`).then((response) => {
+        axios.get(`${movierulzURL}`).then((response) => {
             const html = response.data.replace(
                 /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
                 ""
@@ -61,12 +62,12 @@ router
             for (let i = 0; i < anchors.length; i++) {
                 const anchor = anchors[i];
                 const href = anchor.href;
-                if (href.startsWith("https://7movierulz.es")) {
+                if (href.startsWith(`${movierulzURL}`)) {
                     anchor.setAttribute(
                         "href",
                         href.replace(
-                            "https://7movierulz.es",
-                            "http://192.168.1.13:3000/movierulz"
+                            `${movierulzURL}`,
+                            "/movierulz"
                         )
                     );
                 }
@@ -76,11 +77,11 @@ router
             for (let i = 0; i < images.length; i++) {
                 const image = images[i];
                 const src = image.src;
-                if (src.startsWith("https://7movierulz.es")) {
+                if (src.startsWith(`${movierulzURL}`)) {
                     image.setAttribute(
                         "src",
-                        "http://192.168.1.13:3000/proxy/movierulz/" +
-                            src.replace("https://7movierulz.es/", "")
+                        "/proxy/movierulz/" +
+                            src.replace(`${movierulzURL}/`, "")
                     );
                 }
             }
