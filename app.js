@@ -14,6 +14,7 @@ var deleteTorrentRoutes = require("./routes/deleteTorrent");
 var movierulzRouter = require("./routes/movierulz");
 const { query } = require("express");
 const request = require("request");
+const { movierulzURL } = require("./config");
 
 require("./init");
 
@@ -30,12 +31,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/proxy/movierulz/:id*", async (req, res, next) => {
     console.log(req.url);
-    console.log(
-        "https://7movierulz.es/" + req.params.id + "/uploads" + req.url
-    );
-    request.get(
-        "https://7movierulz.es/" + req.params.id + "/uploads" + req.url,
-    ).pipe(res);
+    console.log(movierulzURL + "/" + req.params.id + "/uploads" + req.url);
+    request
+        .get(movierulzURL + "/" + req.params.id + "/uploads" + req.url)
+        .pipe(res)
+        .on("error", (err) => console.log(err));
     // next();
 });
 
