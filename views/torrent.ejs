@@ -13,17 +13,30 @@
         <ol>
             <% files.forEach((file, index) => { %>
             <li>
-                <a
-                    href="intent://<%= encodeURI(`192.168.1.13:5000/${index}`) %>#Intent;package=org.videolan.vlc;action=android.intent.action.VIEW;scheme=http;type=video/mp4;end"
+                <button
+                    onclick="generateIntent('<%= index %>')"
                 >
                     <%= file.name %> <span id="<%= file.name %>">0%</span>
-                </a>
+                </>
             </li>
             <% }) %>
         </ol>
     </body>
     <script>
         const socket = io();
+
+        const generateIntent = (file) => {
+            let url = window.location.hostname;
+            if (window.location.port) {
+                url += `:${window.location.port}`
+            }
+            url += `/${file}`;
+            
+            const intent = `intent://${url}#Intent;package=org.videolan.vlc;action=android.intent.action.VIEW;scheme=http;type=video/mp4;end`
+            const a = document.createElement("a");
+            a.href = intent;
+            a.click();
+        };
 
         socket.on("torrentFilesProgress", ({ torrent, files }) => {
             const main = document.getElementById("main");
